@@ -43,11 +43,11 @@ export const updateCase = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {};
+    const patch: Partial<{ status: string; intervention_notes: string; assigned_to: string }> = {};
     if (data.status) patch.status = data.status;
     if (data.intervention_notes !== undefined) patch.intervention_notes = data.intervention_notes;
     if (data.assigned_to !== undefined) patch.assigned_to = data.assigned_to;
-    const { error } = await supabaseAdmin.from("cases").update(patch).eq("id", data.id);
+    const { error } = await supabaseAdmin.from("cases").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
