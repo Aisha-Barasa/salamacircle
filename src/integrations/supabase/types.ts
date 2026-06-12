@@ -14,16 +14,190 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      case_messages: {
+        Row: {
+          author: Database["public"]["Enums"]["author_type"]
+          body: string
+          case_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          author: Database["public"]["Enums"]["author_type"]
+          body: string
+          case_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          author?: Database["public"]["Enums"]["author_type"]
+          body?: string
+          case_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cases: {
+        Row: {
+          assigned_to: string | null
+          case_code: string
+          category: Database["public"]["Enums"]["case_category"]
+          constituency: string
+          contact_method: string | null
+          contact_value: string | null
+          created_at: string
+          description: string
+          id: string
+          intervention_notes: string | null
+          status: Database["public"]["Enums"]["case_status"]
+          updated_at: string
+          urgency: Database["public"]["Enums"]["case_urgency"]
+          ward: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_code?: string
+          category: Database["public"]["Enums"]["case_category"]
+          constituency: string
+          contact_method?: string | null
+          contact_value?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          intervention_notes?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["case_urgency"]
+          ward?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          case_code?: string
+          category?: Database["public"]["Enums"]["case_category"]
+          constituency?: string
+          contact_method?: string | null
+          contact_value?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          intervention_notes?: string | null
+          status?: Database["public"]["Enums"]["case_status"]
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["case_urgency"]
+          ward?: string | null
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          category: string
+          contact: string | null
+          created_at: string
+          description: string
+          id: string
+          location: string | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          category: string
+          contact?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          location?: string | null
+          title: string
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          contact?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      support_requests: {
+        Row: {
+          constituency: string | null
+          contact: string | null
+          created_at: string
+          description: string
+          display_name: string | null
+          id: string
+          type: Database["public"]["Enums"]["support_type"]
+        }
+        Insert: {
+          constituency?: string | null
+          contact?: string | null
+          created_at?: string
+          description: string
+          display_name?: string | null
+          id?: string
+          type: Database["public"]["Enums"]["support_type"]
+        }
+        Update: {
+          constituency?: string | null
+          contact?: string | null
+          created_at?: string
+          description?: string
+          display_name?: string | null
+          id?: string
+          type?: Database["public"]["Enums"]["support_type"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_case_code: { Args: never; Returns: string }
+      get_case_by_code: { Args: { p_code: string }; Returns: Json }
+      post_reporter_message: {
+        Args: { p_body: string; p_code: string }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      author_type: "reporter" | "admin" | "system"
+      case_category:
+        | "sudden_isolation"
+        | "harmful_online_influence"
+        | "school_dropout_risk"
+        | "emotional_distress"
+        | "violent_rhetoric"
+        | "recruitment_concerns"
+        | "substance_abuse"
+        | "family_community_conflict"
+      case_status:
+        | "submitted"
+        | "under_review"
+        | "verified"
+        | "intervention_assigned"
+        | "active_support"
+        | "monitoring"
+        | "resolved"
+      case_urgency: "low" | "moderate" | "urgent"
+      support_type:
+        | "mentorship"
+        | "counseling"
+        | "jobs"
+        | "education"
+        | "mental_health"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +324,35 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      author_type: ["reporter", "admin", "system"],
+      case_category: [
+        "sudden_isolation",
+        "harmful_online_influence",
+        "school_dropout_risk",
+        "emotional_distress",
+        "violent_rhetoric",
+        "recruitment_concerns",
+        "substance_abuse",
+        "family_community_conflict",
+      ],
+      case_status: [
+        "submitted",
+        "under_review",
+        "verified",
+        "intervention_assigned",
+        "active_support",
+        "monitoring",
+        "resolved",
+      ],
+      case_urgency: ["low", "moderate", "urgent"],
+      support_type: [
+        "mentorship",
+        "counseling",
+        "jobs",
+        "education",
+        "mental_health",
+      ],
+    },
   },
 } as const
