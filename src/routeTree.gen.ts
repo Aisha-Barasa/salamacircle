@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubmitConcernRouteImport } from './routes/submit-concern'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RequestSupportRouteImport } from './routes/request-support'
 import { Route as CaseRouteImport } from './routes/case'
@@ -19,6 +20,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SubmitConcernRoute = SubmitConcernRouteImport.update({
   id: '/submit-concern',
   path: '/submit-concern',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResourcesRoute = ResourcesRouteImport.update({
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/submit-concern': typeof SubmitConcernRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/submit-concern': typeof SubmitConcernRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/submit-concern': typeof SubmitConcernRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/case'
     | '/request-support'
     | '/resources'
+    | '/sitemap.xml'
     | '/submit-concern'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/case'
     | '/request-support'
     | '/resources'
+    | '/sitemap.xml'
     | '/submit-concern'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/case'
     | '/request-support'
     | '/resources'
+    | '/sitemap.xml'
     | '/submit-concern'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   CaseRoute: typeof CaseRoute
   RequestSupportRoute: typeof RequestSupportRoute
   ResourcesRoute: typeof ResourcesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SubmitConcernRoute: typeof SubmitConcernRoute
 }
 
@@ -115,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/submit-concern'
       fullPath: '/submit-concern'
       preLoaderRoute: typeof SubmitConcernRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resources': {
@@ -161,8 +181,19 @@ const rootRouteChildren: RootRouteChildren = {
   CaseRoute: CaseRoute,
   RequestSupportRoute: RequestSupportRoute,
   ResourcesRoute: ResourcesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SubmitConcernRoute: SubmitConcernRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
