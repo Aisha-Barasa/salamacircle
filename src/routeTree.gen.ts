@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubmitConcernRouteImport } from './routes/submit-concern'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RequestSupportRouteImport } from './routes/request-support'
+import { Route as CaseRouteImport } from './routes/case'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SubmitConcernRoute = SubmitConcernRouteImport.update({
@@ -29,6 +31,16 @@ const RequestSupportRoute = RequestSupportRouteImport.update({
   path: '/request-support',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CaseRoute = CaseRouteImport.update({
+  id: '/case',
+  path: '/case',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +49,16 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
   '/submit-concern': typeof SubmitConcernRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
   '/submit-concern': typeof SubmitConcernRoute
@@ -50,20 +66,43 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/case': typeof CaseRoute
   '/request-support': typeof RequestSupportRoute
   '/resources': typeof ResourcesRoute
   '/submit-concern': typeof SubmitConcernRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/request-support' | '/resources' | '/submit-concern'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/case'
+    | '/request-support'
+    | '/resources'
+    | '/submit-concern'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/request-support' | '/resources' | '/submit-concern'
-  id: '__root__' | '/' | '/request-support' | '/resources' | '/submit-concern'
+  to:
+    | '/'
+    | '/admin'
+    | '/case'
+    | '/request-support'
+    | '/resources'
+    | '/submit-concern'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/case'
+    | '/request-support'
+    | '/resources'
+    | '/submit-concern'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  CaseRoute: typeof CaseRoute
   RequestSupportRoute: typeof RequestSupportRoute
   ResourcesRoute: typeof ResourcesRoute
   SubmitConcernRoute: typeof SubmitConcernRoute
@@ -92,6 +131,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequestSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/case': {
+      id: '/case'
+      path: '/case'
+      fullPath: '/case'
+      preLoaderRoute: typeof CaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +157,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  CaseRoute: CaseRoute,
   RequestSupportRoute: RequestSupportRoute,
   ResourcesRoute: ResourcesRoute,
   SubmitConcernRoute: SubmitConcernRoute,
@@ -111,3 +166,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
