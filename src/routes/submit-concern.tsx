@@ -42,11 +42,11 @@ function SubmitConcern() {
     const { data, error } = await supabase.rpc("submit_anonymous_case", {
       p_category: category,
       p_constituency: constituency,
-      p_ward: ward || null,
+      p_ward: ward || undefined,
       p_description: description.trim(),
       p_urgency: urgency,
-      p_contact_method: contactMethod || null,
-      p_contact_value: contactValue || null,
+      p_contact_method: contactMethod || undefined,
+      p_contact_value: contactValue || undefined,
     });
     setSubmitting(false);
     if (error || !data) {
