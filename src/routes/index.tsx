@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, Lock, Sparkles, Users, GraduationCap, Briefcase, Shield, MessageCircle } from "lucide-react";
-import heroImage from "@/assets/hero-community.jpg";
 import { STATUS_FLOW } from "@/lib/salama";
 
 export const Route = createFileRoute("/")({
@@ -21,7 +20,7 @@ function Index() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-[image:var(--gradient-soft)]" />
-        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 md:grid-cols-2 md:items-center md:py-24">
+        <div className="mx-auto max-w-3xl px-4 py-20 text-center md:py-28">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs text-muted-foreground">
               <Sparkles className="h-3.5 w-3.5 text-secondary" />
@@ -33,11 +32,11 @@ function Index() {
                 mentorship, support and opportunity.
               </span>
             </h1>
-            <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
+            <p className="mt-5 mx-auto max-w-xl text-base text-muted-foreground sm:text-lg">
               Salama Circle connects coastal youth to mentors, counselors, training and jobs —
               so concerns become care, not alarm. Belong. Build. Protect.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/submit-concern"
                 className="inline-flex h-12 items-center justify-center rounded-xl bg-[image:var(--gradient-hero)] px-7 text-sm font-medium text-primary-foreground shadow-[var(--shadow-glow)] transition-opacity hover:opacity-95"
@@ -51,19 +50,9 @@ function Index() {
                 Request support
               </Link>
             </div>
-            <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Lock className="h-3.5 w-3.5" /> Fully anonymous · No login required · End-to-end private
             </div>
-          </div>
-          <div className="relative">
-            <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-[image:var(--gradient-warm)] opacity-60 blur-2xl" />
-            <img
-              src={heroImage}
-              alt="Coastal community youth and mentors gathered in a circle by the ocean at sunset"
-              width={1600}
-              height={1100}
-              className="aspect-[4/3] w-full rounded-[2rem] object-cover shadow-[var(--shadow-card)]"
-            />
           </div>
         </div>
       </section>
