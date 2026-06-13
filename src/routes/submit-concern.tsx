@@ -39,25 +39,21 @@ function SubmitConcern() {
       return;
     }
     setSubmitting(true);
-    const { data, error } = await supabase
-      .from("cases")
-      .insert({
-        category,
-        constituency,
-        ward: ward || null,
-        description: description.trim(),
-        urgency,
-        contact_method: contactMethod || null,
-        contact_value: contactValue || null,
-      })
-      .select("case_code")
-      .single();
+    const { data, error } = await supabase.rpc("submit_anonymous_case", {
+      p_category: category,
+      p_constituency: constituency,
+      p_ward: ward || undefined,
+      p_description: description.trim(),
+      p_urgency: urgency,
+      p_contact_method: contactMethod || undefined,
+      p_contact_value: contactValue || undefined,
+    });
     setSubmitting(false);
     if (error || !data) {
       toast.error("Could not submit. Please try again.");
       return;
     }
-    setCaseCode(data.case_code);
+    setCaseCode(data);
     setStep(6);
   }
 
