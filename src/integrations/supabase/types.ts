@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_label: string | null
+          case_id: string | null
+          created_at: string
+          details: Json
+          id: string
+          target: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_label?: string | null
+          case_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          target?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_label?: string | null
+          case_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          target?: string | null
+        }
+        Relationships: []
+      }
       case_messages: {
         Row: {
           author: Database["public"]["Enums"]["author_type"]
@@ -97,6 +130,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_pool: {
+        Row: {
+          active_caseload: number
+          capacity: number
+          constituency: string
+          contact: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_active: boolean
+          languages: string[]
+          notes: string | null
+          skills: string[]
+          updated_at: string
+        }
+        Insert: {
+          active_caseload?: number
+          capacity?: number
+          constituency: string
+          contact?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          notes?: string | null
+          skills?: string[]
+          updated_at?: string
+        }
+        Update: {
+          active_caseload?: number
+          capacity?: number
+          constituency?: string
+          contact?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          notes?: string | null
+          skills?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           category: string
@@ -160,16 +238,60 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      claim_first_admin: { Args: never; Returns: boolean }
       generate_case_code: { Args: never; Returns: string }
       get_case_by_code: { Args: { p_code: string }; Returns: Json }
+      grant_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _target_user: string
+        }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       post_reporter_message: {
         Args: { p_body: string; p_code: string }
         Returns: string
+      }
+      revoke_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _target_user: string
+        }
+        Returns: undefined
       }
       submit_anonymous_case: {
         Args: {
@@ -185,6 +307,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "coordinator" | "mentor"
       author_type: "reporter" | "admin" | "system"
       case_category:
         | "sudden_isolation"
@@ -337,6 +460,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "coordinator", "mentor"],
       author_type: ["reporter", "admin", "system"],
       case_category: [
         "sudden_isolation",
