@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Shield } from "lucide-react";
+import { Shield, LogIn } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -31,6 +31,13 @@ export function Header() {
               {n.label}
             </Link>
           ))}
+          <Link
+            to="/auth"
+            className="ml-2 inline-flex items-center gap-1.5 rounded-lg border border-input px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+            title="Coordinator workspace"
+          >
+            <LogIn className="h-3.5 w-3.5" /> Coordinator
+          </Link>
         </nav>
         <Link
           to="/submit-concern"
