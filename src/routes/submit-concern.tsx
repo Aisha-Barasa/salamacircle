@@ -8,9 +8,9 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/submit-concern")({
   head: () => ({
     meta: [
-      { title: "Submit a concern — Salama Circle" },
+      { title: "Submit a concern — Bomaveda" },
       { name: "description", content: "Anonymously flag a youth wellbeing concern in Kilifi County. No names, no login. A trained coordinator will follow up." },
-      { property: "og:title", content: "Submit a concern — Salama Circle" },
+      { property: "og:title", content: "Submit a concern — Bomaveda" },
       { property: "og:description", content: "Anonymous, secure reporting for community-led youth support." },
     ],
   }),

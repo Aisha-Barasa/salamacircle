@@ -7,9 +7,9 @@ import { useState } from "react";
 export const Route = createFileRoute("/resources")({
   head: () => ({
     meta: [
-      { title: "Community resources — Salama Circle" },
+      { title: "Community resources — Bomaveda" },
       { name: "description", content: "Curated youth opportunities, scholarships, digital skills programs, mental-health services and emergency contacts in Kilifi County." },
-      { property: "og:title", content: "Community resources — Salama Circle" },
+      { property: "og:title", content: "Community resources — Bomaveda" },
       { property: "og:description", content: "Free programs and services for coastal Kenyan youth and families." },
     ],
   }),

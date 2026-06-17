@@ -29,7 +29,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/60 px-4 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Salama Circle · Built with care for Kilifi County
+        © {new Date().getFullYear()} Bomaveda · Built with care for Kilifi County
       </div>
     </footer>
   );

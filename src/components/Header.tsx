@@ -17,7 +17,7 @@ export function Header() {
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[image:var(--gradient-hero)] text-primary-foreground shadow-[var(--shadow-glow)]">
             <Shield className="h-4 w-4" />
           </span>
-          <span className="text-base sm:text-lg">Salama Circle</span>
+          <span className="text-base sm:text-lg">Bomaveda</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((n) => (

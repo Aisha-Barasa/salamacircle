@@ -10,9 +10,9 @@ export const Route = createFileRoute("/case")({
   validateSearch: z.object({ code: z.string().optional() }),
   head: () => ({
     meta: [
-      { title: "Check case — Salama Circle" },
+      { title: "Check case — Bomaveda" },
       { name: "description", content: "Securely check the status of an anonymous case and exchange messages with coordinators using your Case ID." },
-      { property: "og:title", content: "Check case — Salama Circle" },
+      { property: "og:title", content: "Check case — Bomaveda" },
       { property: "og:description", content: "Anonymous, secure case-thread updates for reporters." },
     ],
   }),
@@ -118,7 +118,7 @@ function CaseLookup() {
 
           <div className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
             <h2 className="text-lg font-semibold">Secure thread</h2>
-            <p className="text-xs text-muted-foreground">Messages between you (anonymous) and a Salama Circle coordinator.</p>
+            <p className="text-xs text-muted-foreground">Messages between you (anonymous) and a Bomaveda coordinator.</p>
 
             <div className="mt-5 space-y-3">
               {data.messages.length === 0 && (

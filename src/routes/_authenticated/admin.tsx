@@ -26,8 +26,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Coordinator dashboard — Salama Circle" },
-      { name: "description", content: "Salama Circle coordinator workspace: review anonymous cases, assign mentors, and audit every action." },
+      { title: "Coordinator dashboard — Bomaveda" },
+      { name: "description", content: "Bomaveda coordinator workspace: review anonymous cases, assign mentors, and audit every action." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -85,7 +85,7 @@ function Admin() {
         <h1 className="mt-4 text-xl font-semibold">No coordinator access yet</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Your account is signed in, but does not have a coordinator or admin role.
-          If you are setting up Salama Circle for the first time, you can claim admin
+          If you are setting up Bomaveda for the first time, you can claim admin
           access below. Otherwise, ask an existing admin to grant you a role.
         </p>
         <button
@@ -110,7 +110,7 @@ function Admin() {
             <Shield className="h-3.5 w-3.5 text-secondary" /> Coordinator workspace · Internal use
             {isAdmin && <span className="rounded-full bg-[color:var(--primary-soft)] px-2 py-0.5 text-[10px] font-semibold text-primary">ADMIN</span>}
           </div>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">Salama Circle dashboard</h1>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight">Bomaveda dashboard</h1>
         </div>
         <button onClick={signOut} className="inline-flex items-center gap-2 rounded-lg border border-input px-3 py-2 text-sm hover:bg-muted">
           <LogOut className="h-4 w-4" /> Sign out
