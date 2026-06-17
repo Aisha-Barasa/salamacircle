@@ -289,7 +289,7 @@ function SubmitConcern() {
 }
 
 function Header({ step }: { step: Step }) {
-  const total = 5;
+  const total = 6;
   return (
     <div>
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Submit a concern</h1>
