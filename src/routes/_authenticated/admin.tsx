@@ -15,10 +15,12 @@ import {
   upsertMentor,
   deleteMentor,
   listAuditLog,
+  listEscalations,
+  markEscalationForwarded,
 } from "@/lib/api/admin.functions";
 import { useMemo, useState } from "react";
 import { categoryLabel, statusLabel, STATUS_FLOW, CATEGORIES } from "@/lib/salama";
-import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2, Siren, Download, CheckCircle2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
 });
 
-type Tab = "cases" | "mentors" | "audit";
+type Tab = "cases" | "escalations" | "mentors" | "audit";
 
 function Admin() {
   const navigate = useNavigate();
@@ -119,12 +121,14 @@ function Admin() {
 
       <div className="mt-6 flex gap-1 rounded-2xl bg-muted p-1 text-sm">
         <TabBtn active={tab === "cases"} onClick={() => setTab("cases")} icon={Inbox} label="Cases" />
+        <TabBtn active={tab === "escalations"} onClick={() => setTab("escalations")} icon={Siren} label="Escalations" />
         <TabBtn active={tab === "mentors"} onClick={() => setTab("mentors")} icon={Users} label="Mentor pool" />
         {isAdmin && <TabBtn active={tab === "audit"} onClick={() => setTab("audit")} icon={Activity} label="Audit log" />}
       </div>
 
       <div className="mt-6">
         {tab === "cases" && <CasesTab />}
+        {tab === "escalations" && <EscalationsTab />}
         {tab === "mentors" && <MentorsTab isAdmin={isAdmin} />}
         {tab === "audit" && isAdmin && <AuditTab />}
       </div>
@@ -584,3 +588,166 @@ function AuditTab() {
     </div>
   );
 }
+/* =========================== ESCALATIONS TAB ========================== */
+
+function EscalationsTab() {
+  const qc = useQueryClient();
+  const listFn = useServerFn(listEscalations);
+  const markFn = useServerFn(markEscalationForwarded);
+  const { data: rows = [], isLoading } = useQuery({
+    queryKey: ["admin", "escalations"],
+    queryFn: () => listFn(),
+  });
+  const [filter, setFilter] = useState<"all" | "pending" | "forwarded">("pending");
+
+  const filtered = rows.filter((r) =>
+    filter === "all" ? true : (r.escalation_status ?? "pending") === filter,
+  );
+  const pendingCount = rows.filter((r) => (r.escalation_status ?? "pending") === "pending").length;
+
+  const mark = useMutation({
+    mutationFn: (vars: { case_id: string; reference?: string }) => markFn({ data: vars }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "escalations"] });
+      qc.invalidateQueries({ queryKey: ["admin", "cases"] });
+      toast.success("Marked as forwarded to authority.");
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+  });
+
+  function exportCsv() {
+    const header = [
+      "case_code", "created_at", "category", "constituency", "ward",
+      "escalation_target", "escalation_authority", "escalation_status",
+      "forwarded_at", "forwarded_reference", "contact_method", "contact_value", "description",
+    ];
+    const lines = [header.join(",")];
+    for (const r of filtered) {
+      const row = header.map((k) => {
+        const v = (r as Record<string, unknown>)[k];
+        const s = v == null ? "" : String(v).replace(/"/g, '""').replace(/\r?\n/g, " ");
+        return `"${s}"`;
+      });
+      lines.push(row.join(","));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bomaveda-escalations-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Stat icon={Siren} label="Critical cases" value={rows.length} tone="warm" />
+        <Stat icon={AlertTriangle} label="Pending handoff" value={pendingCount} tone="warm" />
+        <Stat icon={CheckCircle2} label="Forwarded" value={rows.length - pendingCount} tone="cool" />
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-1 rounded-xl bg-muted p-1 text-xs">
+          {(["pending", "forwarded", "all"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`rounded-lg px-3 py-1.5 capitalize ${filter === f ? "bg-card shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={exportCsv}
+          disabled={filtered.length === 0}
+          className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-2 text-sm hover:bg-muted disabled:opacity-50"
+        >
+          <Download className="h-4 w-4" /> Export CSV for authority
+        </button>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+        {!isLoading && filtered.length === 0 && (
+          <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+            No critical cases in this view.
+          </div>
+        )}
+        {filtered.map((r) => {
+          const status = (r.escalation_status ?? "pending") as string;
+          return (
+            <div key={r.id} className="rounded-3xl border border-destructive/30 bg-card p-5 shadow-[var(--shadow-card)]">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm font-semibold text-primary">{r.case_code}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+                      <Siren className="h-3 w-3" /> CRITICAL
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${status === "forwarded" ? "bg-secondary/20 text-secondary-foreground" : "bg-accent/30 text-accent-foreground"}`}>
+                      {status.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm font-medium">{categoryLabel(r.category)}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {r.constituency}{r.ward ? ` · ${r.ward}` : ""} · received {new Date(r.created_at).toLocaleString()}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-border bg-muted/40 px-3 py-2 text-right text-xs">
+                  <div className="font-semibold uppercase tracking-widest text-muted-foreground">
+                    Route to {r.escalation_target === "police" ? "Police" : "Local Chief"}
+                  </div>
+                  <div className="mt-0.5 text-sm font-medium">{r.escalation_authority ?? "—"}</div>
+                </div>
+              </div>
+
+              <p className="mt-4 whitespace-pre-wrap rounded-xl bg-muted/40 p-3 text-sm">{r.description}</p>
+
+              {(r.contact_method || r.contact_value) && (
+                <div className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[color:var(--primary-soft)] px-3 py-1.5 text-xs text-primary">
+                  <Lock className="h-3 w-3" /> Reporter follow-up: {r.contact_method} — {r.contact_value}
+                </div>
+              )}
+
+              {status === "forwarded" ? (
+                <div className="mt-4 text-xs text-muted-foreground">
+                  Forwarded {r.forwarded_at ? new Date(r.forwarded_at).toLocaleString() : ""}
+                  {r.forwarded_reference ? ` · ref ${r.forwarded_reference}` : ""}
+                </div>
+              ) : (
+                <ForwardForm onSubmit={(reference) => mark.mutate({ case_id: r.id, reference })} pending={mark.isPending} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ForwardForm({ onSubmit, pending }: { onSubmit: (reference?: string) => void; pending: boolean }) {
+  const [ref, setRef] = useState("");
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
+      <input
+        value={ref}
+        onChange={(e) => setRef(e.target.value)}
+        placeholder="OB number / chief reference (optional)"
+        className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+      />
+      <button
+        onClick={() => onSubmit(ref.trim() || undefined)}
+        disabled={pending}
+        className="inline-flex items-center gap-2 rounded-lg bg-[image:var(--gradient-hero)] px-4 py-2 text-sm font-medium text-primary-foreground shadow-[var(--shadow-glow)] disabled:opacity-60"
+      >
+        <Send className="h-4 w-4" /> Mark forwarded
+      </button>
+    </div>
+  );
+}
+
+// Re-export for tree (silenced unused warnings if any)
+import { Lock } from "lucide-react";
+void Lock;

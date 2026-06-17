@@ -15,7 +15,26 @@ export const URGENCY = [
   { value: "low", label: "Low", desc: "Early warning, no immediate harm" },
   { value: "moderate", label: "Moderate", desc: "Needs support within days" },
   { value: "urgent", label: "Urgent", desc: "Needs help now" },
+  { value: "critical", label: "Critical / Emergency", desc: "Imminent danger — escalate to local authorities now" },
 ] as const;
+
+export type UrgencyValue = (typeof URGENCY)[number]["value"];
+
+/** Police stations across Kilifi County that critical cases can be routed to. */
+export const POLICE_STATIONS: string[] = [
+  "Kilifi Police Station",
+  "Malindi Police Station",
+  "Watamu Police Station",
+  "Mtwapa Police Station",
+  "Mariakani Police Station",
+  "Kaloleni Police Station",
+  "Rabai Police Station",
+  "Bamba Police Station",
+  "Ganze Police Station",
+  "Gede Police Station",
+  "Magarini Police Station",
+  "Marafa Police Station",
+];
 
 export const CONSTITUENCIES: Record<string, string[]> = {
   "Kilifi North": ["Tezo", "Sokoni", "Kibarani", "Dabaso", "Matsangoni", "Watamu", "Mnarani"],
