@@ -120,3 +120,48 @@ export const listAuditLog = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return data ?? [];
   });
+
+/**
+ * Critical-case escalation queue. Returns all cases with urgency='critical',
+ * including the reporter-selected authority (police ward / chief location).
+ * Coordinators and admins forward these to the chosen authority off-platform,
+ * then call `markEscalationForwarded` to record the handoff in the audit log.
+ */
+export const listEscalations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const [{ data: isAdmin }, { data: isCoord }] = await Promise.all([
+      context.supabase.rpc("is_admin", { _user_id: context.userId }),
+      context.supabase.rpc("has_role", { _user_id: context.userId, _role: "coordinator" }),
+    ]);
+    if (!isAdmin && !isCoord) throw new Error("forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("cases")
+      .select("id,case_code,category,constituency,ward,description,contact_method,contact_value,escalation_target,escalation_authority,escalation_status,escalated_at,forwarded_at,forwarded_reference,created_at")
+      .eq("urgency", "critical")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+export const markEscalationForwarded = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { case_id: string; reference?: string }) =>
+    z.object({ case_id: z.string().uuid(), reference: z.string().max(200).optional() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.rpc("mark_escalation_forwarded", {
+      p_case_id: data.case_id,
+      p_reference: data.reference ?? null,
+    });
+    if (error) throw new Error(error.message);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("audit_log").insert({
+      actor_id: context.userId,
+      action: "escalation_forwarded",
+      case_id: data.case_id,
+      details: { reference: data.reference ?? null },
+    });
+    return { ok: true };
+  });
