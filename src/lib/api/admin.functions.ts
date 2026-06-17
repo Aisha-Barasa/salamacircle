@@ -153,7 +153,7 @@ export const markEscalationForwarded = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.rpc("mark_escalation_forwarded", {
       p_case_id: data.case_id,
-      p_reference: data.reference ?? null,
+      p_reference: data.reference,
     });
     if (error) throw new Error(error.message);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
