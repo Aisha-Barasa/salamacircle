@@ -15,10 +15,12 @@ import {
   upsertMentor,
   deleteMentor,
   listAuditLog,
+  listEscalations,
+  markEscalationForwarded,
 } from "@/lib/api/admin.functions";
 import { useMemo, useState } from "react";
 import { categoryLabel, statusLabel, STATUS_FLOW, CATEGORIES } from "@/lib/salama";
-import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2, Siren, Download, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
 });
 
-type Tab = "cases" | "mentors" | "audit";
+type Tab = "cases" | "escalations" | "mentors" | "audit";
 
 function Admin() {
   const navigate = useNavigate();
@@ -119,12 +121,14 @@ function Admin() {
 
       <div className="mt-6 flex gap-1 rounded-2xl bg-muted p-1 text-sm">
         <TabBtn active={tab === "cases"} onClick={() => setTab("cases")} icon={Inbox} label="Cases" />
+        <TabBtn active={tab === "escalations"} onClick={() => setTab("escalations")} icon={Siren} label="Escalations" />
         <TabBtn active={tab === "mentors"} onClick={() => setTab("mentors")} icon={Users} label="Mentor pool" />
         {isAdmin && <TabBtn active={tab === "audit"} onClick={() => setTab("audit")} icon={Activity} label="Audit log" />}
       </div>
 
       <div className="mt-6">
         {tab === "cases" && <CasesTab />}
+        {tab === "escalations" && <EscalationsTab />}
         {tab === "mentors" && <MentorsTab isAdmin={isAdmin} />}
         {tab === "audit" && isAdmin && <AuditTab />}
       </div>
