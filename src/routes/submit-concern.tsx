@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { CATEGORIES, CONSTITUENCIES, URGENCY, type CategoryValue } from "@/lib/salama";
+import { CATEGORIES, CONSTITUENCIES, URGENCY, POLICE_STATIONS, type CategoryValue, type UrgencyValue } from "@/lib/salama";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, ChevronRight, Copy, Lock, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Check, ChevronRight, Copy, Lock, ShieldCheck, Siren } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/submit-concern")({
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/submit-concern")({
   component: SubmitConcern,
 });
 
-type Step = 1 | 2 | 3 | 4 | 5 | 6;
+type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 function SubmitConcern() {
   const [step, setStep] = useState<Step>(1);
@@ -25,7 +25,9 @@ function SubmitConcern() {
   const [constituency, setConstituency] = useState("");
   const [ward, setWard] = useState("");
   const [description, setDescription] = useState("");
-  const [urgency, setUrgency] = useState<"low" | "moderate" | "urgent">("moderate");
+  const [urgency, setUrgency] = useState<UrgencyValue>("moderate");
+  const [escalationTarget, setEscalationTarget] = useState<"chief" | "police" | "">("");
+  const [escalationAuthority, setEscalationAuthority] = useState("");
   const [contactMethod, setContactMethod] = useState("");
   const [contactValue, setContactValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -38,6 +40,10 @@ function SubmitConcern() {
       toast.error("Please complete category, location and description (10+ chars).");
       return;
     }
+    if (urgency === "critical" && (!escalationTarget || !escalationAuthority)) {
+      toast.error("Critical cases require an escalation authority.");
+      return;
+    }
     setSubmitting(true);
     const { data, error } = await supabase.rpc("submit_anonymous_case", {
       p_category: category,
@@ -47,6 +53,8 @@ function SubmitConcern() {
       p_urgency: urgency,
       p_contact_method: contactMethod || undefined,
       p_contact_value: contactValue || undefined,
+      p_escalation_target: urgency === "critical" ? escalationTarget : undefined,
+      p_escalation_authority: urgency === "critical" ? escalationAuthority : undefined,
     });
     setSubmitting(false);
     if (error || !data) {
@@ -54,10 +62,10 @@ function SubmitConcern() {
       return;
     }
     setCaseCode(data);
-    setStep(6);
+    setStep(7);
   }
 
-  if (step === 6 && caseCode) {
+  if (step === 7 && caseCode) {
     return <Confirmation code={caseCode} />;
   }
 
