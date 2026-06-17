@@ -146,27 +146,102 @@ function SubmitConcern() {
 
         {step === 4 && (
           <StepShell title="How urgent does this feel?" subtitle="This helps coordinators prioritise. There is no wrong answer.">
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {URGENCY.map((u) => (
                 <button
                   key={u.value}
                   onClick={() => setUrgency(u.value)}
                   className={`rounded-2xl border p-4 text-left transition-all ${
                     urgency === u.value
-                      ? "border-primary bg-[color:var(--primary-soft)] ring-2 ring-primary/30"
-                      : "border-border hover:border-primary/40 hover:bg-muted"
+                      ? u.value === "critical"
+                        ? "border-destructive bg-destructive/10 ring-2 ring-destructive/30"
+                        : "border-primary bg-[color:var(--primary-soft)] ring-2 ring-primary/30"
+                      : u.value === "critical"
+                        ? "border-destructive/40 hover:bg-destructive/5"
+                        : "border-border hover:border-primary/40 hover:bg-muted"
                   }`}
                 >
-                  <div className="font-medium">{u.label}</div>
+                  <div className={`flex items-center gap-2 font-medium ${u.value === "critical" ? "text-destructive" : ""}`}>
+                    {u.value === "critical" && <Siren className="h-4 w-4" />} {u.label}
+                  </div>
                   <div className="mt-1 text-sm text-muted-foreground">{u.desc}</div>
                 </button>
               ))}
             </div>
-            <Nav onBack={() => setStep(3)} onNext={() => setStep(5)} />
+            {urgency === "critical" && (
+              <div className="mt-4 flex items-start gap-2 rounded-2xl border border-destructive/30 bg-destructive/5 p-3 text-xs text-destructive">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                <div>
+                  If a life is in immediate danger, call <strong>999</strong> right now. Submitting here also forwards your report to your chosen local authority through Bomaveda, securely and anonymously.
+                </div>
+              </div>
+            )}
+            <Nav onBack={() => setStep(3)} onNext={() => setStep(urgency === "critical" ? 5 : 6)} />
           </StepShell>
         )}
 
         {step === 5 && (
+          <StepShell
+            title="Where should this be escalated?"
+            subtitle="Bomaveda will forward this critical case to the authority you choose. Your identity stays anonymous."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button
+                onClick={() => { setEscalationTarget("chief"); setEscalationAuthority(""); }}
+                className={`rounded-2xl border p-4 text-left transition-all ${escalationTarget === "chief" ? "border-primary bg-[color:var(--primary-soft)] ring-2 ring-primary/30" : "border-border hover:border-primary/40 hover:bg-muted"}`}
+              >
+                <div className="font-medium">Local Chief</div>
+                <div className="mt-1 text-sm text-muted-foreground">Sub-location or ward chief in {constituency || "your area"}.</div>
+              </button>
+              <button
+                onClick={() => { setEscalationTarget("police"); setEscalationAuthority(""); }}
+                className={`rounded-2xl border p-4 text-left transition-all ${escalationTarget === "police" ? "border-primary bg-[color:var(--primary-soft)] ring-2 ring-primary/30" : "border-border hover:border-primary/40 hover:bg-muted"}`}
+              >
+                <div className="font-medium">Police</div>
+                <div className="mt-1 text-sm text-muted-foreground">Forward securely to a Kilifi County police station.</div>
+              </button>
+            </div>
+
+            {escalationTarget === "chief" && (
+              <div className="mt-5">
+                <label className="text-sm font-medium">Choose the chief's ward / location</label>
+                <select
+                  value={escalationAuthority}
+                  onChange={(e) => setEscalationAuthority(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">Select ward…</option>
+                  {wards.map((w) => (
+                    <option key={w} value={`${w} Location Chief`}>{w}</option>
+                  ))}
+                </select>
+                {wards.length === 0 && (
+                  <p className="mt-2 text-xs text-muted-foreground">Pick a constituency on Step 2 to see chief locations.</p>
+                )}
+              </div>
+            )}
+
+            {escalationTarget === "police" && (
+              <div className="mt-5">
+                <label className="text-sm font-medium">Choose the police station / ward</label>
+                <select
+                  value={escalationAuthority}
+                  onChange={(e) => setEscalationAuthority(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">Select police station…</option>
+                  {POLICE_STATIONS.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <Nav onBack={() => setStep(4)} onNext={() => setStep(6)} disabled={!escalationTarget || !escalationAuthority} />
+          </StepShell>
+        )}
+
+        {step === 6 && (
           <StepShell
             title="Optional secure follow-up"
             subtitle="Only if you'd like a coordinator to reach you confidentially. You can skip this and check updates anytime with your Case ID."
@@ -195,7 +270,7 @@ function SubmitConcern() {
             </p>
 
             <div className="mt-6 flex flex-col-reverse items-stretch justify-between gap-3 sm:flex-row sm:items-center">
-              <button onClick={() => setStep(4)} className="rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-medium hover:bg-muted">
+              <button onClick={() => setStep(urgency === "critical" ? 5 : 4)} className="rounded-xl border border-border bg-background px-5 py-2.5 text-sm font-medium hover:bg-muted">
                 Back
               </button>
               <button
