@@ -508,7 +508,7 @@ function MentorEditor({ initial, onCancel, onSave, busy }: { initial: Partial<Me
   const langStr = (m.languages ?? []).join(", ");
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+      <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
         <h3 className="text-lg font-semibold">{initial.id ? "Edit mentor" : "Add mentor"}</h3>
         <div className="mt-4 space-y-3">
           <Field label="Display name"><input value={m.display_name ?? ""} onChange={(e) => setM({ ...m, display_name: e.target.value })} className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm" /></Field>
