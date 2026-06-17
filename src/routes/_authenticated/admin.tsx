@@ -20,7 +20,7 @@ import {
 } from "@/lib/api/admin.functions";
 import { useMemo, useState } from "react";
 import { categoryLabel, statusLabel, STATUS_FLOW, CATEGORIES } from "@/lib/salama";
-import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2, Siren, Download, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, BarChart3, Inbox, Send, Shield, Users, Activity, LogOut, ShieldCheck, Plus, Trash2, Siren, Download, CheckCircle2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
