@@ -62,7 +62,7 @@
 }
 
 :root {
-  /* Salama Circle — trust-blue / soft-green / warm-sand */
+  /* Bomaveda — trust-blue / soft-green / warm-sand */
   --radius: 0.9rem;
   --background: oklch(0.985 0.008 95);     /* warm cream */
   --foreground: oklch(0.22 0.04 240);

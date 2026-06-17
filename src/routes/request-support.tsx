@@ -8,9 +8,9 @@ import { CONSTITUENCIES } from "@/lib/salama";
 export const Route = createFileRoute("/request-support")({
   head: () => ({
     meta: [
-      { title: "Request support — Salama Circle" },
-      { name: "description", content: "Request mentorship, counseling, jobs, education or mental-health support from Salama Circle's community network." },
-      { property: "og:title", content: "Request support — Salama Circle" },
+      { title: "Request support — Bomaveda" },
+      { name: "description", content: "Request mentorship, counseling, jobs, education or mental-health support from Bomaveda's community network." },
+      { property: "og:title", content: "Request support — Bomaveda" },
       { property: "og:description", content: "Free, confidential support for coastal youth and their families." },
     ],
   }),

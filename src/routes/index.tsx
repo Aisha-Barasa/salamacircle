@@ -5,9 +5,9 @@ import { STATUS_FLOW } from "@/lib/salama";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Salama Circle — Belong. Build. Protect." },
+      { title: "Bomaveda — Belong. Build. Protect." },
       { name: "description", content: "Community-led youth support across Kilifi County. Anonymous reporting, mentorship, counseling, education and jobs — before harm takes root." },
-      { property: "og:title", content: "Salama Circle" },
+      { property: "og:title", content: "Bomaveda" },
       { property: "og:description", content: "Building safer communities through mentorship, support and opportunity." },
     ],
   }),
@@ -33,7 +33,7 @@ function Index() {
               </span>
             </h1>
             <p className="mt-5 mx-auto max-w-xl text-base text-muted-foreground sm:text-lg">
-              Salama Circle connects coastal youth to mentors, counselors, training and jobs —
+              Bomaveda connects coastal youth to mentors, counselors, training and jobs —
               so concerns become care, not alarm. Belong. Build. Protect.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -60,7 +60,7 @@ function Index() {
       {/* HOW IT WORKS */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">How Salama Circle works</h2>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">How Bomaveda works</h2>
           <p className="mt-3 text-muted-foreground">
             A safe, anonymous bridge between the people who notice and the people who can help.
           </p>
@@ -137,7 +137,7 @@ function Index() {
             <li>· Communication happens through a secure Case ID thread — never directly between people.</li>
             <li>· No reported individuals are publicly listed. Ever.</li>
             <li>· Coordinators are bound by community trust and confidentiality protocols.</li>
-            <li>· Salama Circle is not a police or surveillance system. It exists to deliver support.</li>
+            <li>· Bomaveda is not a police or surveillance system. It exists to deliver support.</li>
           </ul>
         </div>
       </section>

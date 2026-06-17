@@ -7,8 +7,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Coordinator sign-in — Salama Circle" },
-      { name: "description", content: "Sign in to the Salama Circle coordinator workspace." },
+      { title: "Coordinator sign-in — Bomaveda" },
+      { name: "description", content: "Sign in to the Bomaveda coordinator workspace." },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="mt-24 border-t border-border/60 bg-[image:var(--gradient-soft)]">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 md:grid-cols-4">
         <div className="sm:col-span-2">
-          <p className="text-base font-semibold">Salama Circle</p>
+          <p className="text-base font-semibold">Bomaveda</p>
           <p className="mt-1 text-sm text-muted-foreground">Belong. Build. Protect.</p>
           <p className="mt-4 max-w-sm text-sm text-muted-foreground">
             A community-led platform helping coastal Kenya support its youth through mentorship,
@@ -29,7 +29,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border/60 px-4 py-6 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Salama Circle · Built with care for Kilifi County
+        © {new Date().getFullYear()} Bomaveda · Built with care for Kilifi County
       </div>
     </footer>
   );
