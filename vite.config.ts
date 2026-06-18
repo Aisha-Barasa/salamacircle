@@ -6,18 +6,18 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import { nitro } from "nitro/vite";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   build: {
     cssMinify: "esbuild", 
   },
   plugins: [
+    tailwindcss(), // Seamlessly hooks Tailwind v4 up to the client and SSR build streams
     tanstackStart({
       server: {
         entry: "server",
       },
     }),
-    nitro(), // Automatically formats output for the Vercel architecture during builds
   ],
 });
