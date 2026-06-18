@@ -7,17 +7,19 @@
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
   build: {
     cssMinify: "esbuild", 
   },
   plugins: [
-    tailwindcss(), // Seamlessly hooks Tailwind v4 up to the client and SSR build streams
+    tailwindcss(), // Compiles your design framework classes flawlessly
     tanstackStart({
       server: {
         entry: "server",
       },
     }),
+    nitro(), // Standardizes output paths for Vercel functions natively
   ],
 });
