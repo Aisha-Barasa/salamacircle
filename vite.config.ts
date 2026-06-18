@@ -6,10 +6,11 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
   build: {
-    cssMinify: "esbuild", // Force esbuild to compile safely without LightningCSS syntax errors
+    cssMinify: "esbuild", 
   },
   plugins: [
     tanstackStart({
@@ -17,5 +18,6 @@ export default defineConfig({
         entry: "server",
       },
     }),
+    nitro(), // Automatically formats output for the Vercel architecture during builds
   ],
 });
