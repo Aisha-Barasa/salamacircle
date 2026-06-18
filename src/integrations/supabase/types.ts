@@ -89,13 +89,6 @@ export type Database = {
           contact_value: string | null
           created_at: string
           description: string
-          escalated_at: string | null
-          escalation_authority: string | null
-          escalation_status: string
-          escalation_target: string | null
-          forwarded_at: string | null
-          forwarded_by: string | null
-          forwarded_reference: string | null
           id: string
           intervention_notes: string | null
           status: Database["public"]["Enums"]["case_status"]
@@ -112,13 +105,6 @@ export type Database = {
           contact_value?: string | null
           created_at?: string
           description: string
-          escalated_at?: string | null
-          escalation_authority?: string | null
-          escalation_status?: string
-          escalation_target?: string | null
-          forwarded_at?: string | null
-          forwarded_by?: string | null
-          forwarded_reference?: string | null
           id?: string
           intervention_notes?: string | null
           status?: Database["public"]["Enums"]["case_status"]
@@ -135,13 +121,6 @@ export type Database = {
           contact_value?: string | null
           created_at?: string
           description?: string
-          escalated_at?: string | null
-          escalation_authority?: string | null
-          escalation_status?: string
-          escalation_target?: string | null
-          forwarded_at?: string | null
-          forwarded_by?: string | null
-          forwarded_reference?: string | null
           id?: string
           intervention_notes?: string | null
           status?: Database["public"]["Enums"]["case_status"]
@@ -303,10 +282,6 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
-      mark_escalation_forwarded: {
-        Args: { p_case_id: string; p_reference?: string }
-        Returns: undefined
-      }
       post_reporter_message: {
         Args: { p_body: string; p_code: string }
         Returns: string
@@ -318,33 +293,18 @@ export type Database = {
         }
         Returns: undefined
       }
-      submit_anonymous_case:
-        | {
-            Args: {
-              p_category: Database["public"]["Enums"]["case_category"]
-              p_constituency: string
-              p_contact_method?: string
-              p_contact_value?: string
-              p_description?: string
-              p_urgency?: Database["public"]["Enums"]["case_urgency"]
-              p_ward?: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_category: Database["public"]["Enums"]["case_category"]
-              p_constituency: string
-              p_contact_method?: string
-              p_contact_value?: string
-              p_description?: string
-              p_escalation_authority?: string
-              p_escalation_target?: string
-              p_urgency?: Database["public"]["Enums"]["case_urgency"]
-              p_ward?: string
-            }
-            Returns: string
-          }
+      submit_anonymous_case: {
+        Args: {
+          p_category: Database["public"]["Enums"]["case_category"]
+          p_constituency: string
+          p_contact_method?: string
+          p_contact_value?: string
+          p_description?: string
+          p_urgency?: Database["public"]["Enums"]["case_urgency"]
+          p_ward?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "mentor"
@@ -366,7 +326,7 @@ export type Database = {
         | "active_support"
         | "monitoring"
         | "resolved"
-      case_urgency: "low" | "moderate" | "urgent" | "critical"
+      case_urgency: "low" | "moderate" | "urgent"
       support_type:
         | "mentorship"
         | "counseling"
@@ -521,7 +481,7 @@ export const Constants = {
         "monitoring",
         "resolved",
       ],
-      case_urgency: ["low", "moderate", "urgent", "critical"],
+      case_urgency: ["low", "moderate", "urgent"],
       support_type: [
         "mentorship",
         "counseling",
