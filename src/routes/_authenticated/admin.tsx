@@ -748,6 +748,3 @@ function ForwardForm({ onSubmit, pending }: { onSubmit: (reference?: string) => 
   );
 }
 
-// Re-export for tree (silenced unused warnings if any)
-import { Lock } from "lucide-react";
-void Lock;
