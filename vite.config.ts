@@ -8,6 +8,9 @@ import { defineConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
 export default defineConfig({
+  build: {
+    cssMinify: "esbuild", // Force esbuild to compile safely without LightningCSS syntax errors
+  },
   plugins: [
     tanstackStart({
       server: {
