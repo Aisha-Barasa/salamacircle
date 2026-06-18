@@ -144,7 +144,7 @@ function Index() {
 
       {/* PARTNERS */}
       <section className="mx-auto max-w-6xl px-4 pb-24">
-        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">Working alongside</p>
+        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">looking to work alongside</p>
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {["Kilifi County", "Haki Africa", "KECOSCE", "Coast Education Centre", "Sauti ya Vijana"].map((p) => (
             <div key={p} className="rounded-2xl border border-border bg-card px-4 py-6 text-center text-sm font-medium text-muted-foreground">
