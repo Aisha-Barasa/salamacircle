@@ -318,33 +318,20 @@ export type Database = {
         }
         Returns: undefined
       }
-      submit_anonymous_case:
-        | {
-            Args: {
-              p_category: Database["public"]["Enums"]["case_category"]
-              p_constituency: string
-              p_contact_method?: string
-              p_contact_value?: string
-              p_description?: string
-              p_urgency?: Database["public"]["Enums"]["case_urgency"]
-              p_ward?: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_category: Database["public"]["Enums"]["case_category"]
-              p_constituency: string
-              p_contact_method?: string
-              p_contact_value?: string
-              p_description?: string
-              p_escalation_authority?: string
-              p_escalation_target?: string
-              p_urgency?: Database["public"]["Enums"]["case_urgency"]
-              p_ward?: string
-            }
-            Returns: string
-          }
+      submit_anonymous_case: {
+        Args: {
+          p_category: Database["public"]["Enums"]["case_category"]
+          p_constituency: string
+          p_contact_method?: string
+          p_contact_value?: string
+          p_description?: string
+          p_escalation_authority?: string
+          p_escalation_target?: string
+          p_urgency?: Database["public"]["Enums"]["case_urgency"]
+          p_ward?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "mentor"
