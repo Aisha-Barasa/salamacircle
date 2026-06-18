@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.submit_anonymous_case(case_category, text, text, text, case_urgency, text, text);
